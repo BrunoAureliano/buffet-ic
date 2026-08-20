@@ -1,5 +1,6 @@
 import db from '../config/db.js';
 
+
 export const criarAgendamento = (req, res) => {
     // Recebe os dados do front-end
     const {
@@ -52,6 +53,7 @@ export const criarAgendamento = (req, res) => {
     });
 };
 
+
 export const listarAgendamentos = (req, res) => {
     // JOIN pega os detalhes da festa junto com o agendamento
     const sql = `
@@ -71,5 +73,29 @@ export const listarAgendamentos = (req, res) => {
         }
         
         res.status(200).json(results);
+    });
+};
+
+
+export const atualizarStatus = (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    const sql = 'UPDATE Agendamento SET status = ? WHERE idAgendamento = ?';
+
+    db.query(sql, [status, id], (err, results) => {
+        if (err) {
+            console.error('Erro ao atualizar o status:', err);
+            return res.status(500).json({ erro: 'Falha na comunicação com o banco.' });
+        }
+
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ erro: 'Agendamento não encontrado.' });
+        }
+
+        res.status(200).json({ 
+            mensagem: 'Status atualizado com sucesso!',
+            id_reserva: id,
+            status_novo: status 
+        });
     });
 };
