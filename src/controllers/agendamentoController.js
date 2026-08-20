@@ -51,3 +51,25 @@ export const criarAgendamento = (req, res) => {
         });
     });
 };
+
+export const listarAgendamentos = (req, res) => {
+    // JOIN pega os detalhes da festa junto com o agendamento
+    const sql = `
+        SELECT 
+            A.idAgendamento, A.data_festa, A.horario_inicio, A.status, A.valor_final,
+            A.qtd_adultos, A.qtd_criancas_pagantes, A.qtd_criancas_isentas,
+            F.tipo_cardapio, F.adicional_salada
+        FROM Agendamento A
+        LEFT JOIN Festa F ON A.idAgendamento = F.agendamento_id
+        ORDER BY A.data_festa ASC
+    `;
+
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error('Erro ao listar agendamentos:', err);
+            return res.status(500).json({ erro: 'Falha ao buscar os dados no banco.' });
+        }
+        
+        res.status(200).json(results);
+    });
+};
