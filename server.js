@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import './src/config/db.js'; 
 import agendamentoRoutes from './src/routes/agendamentoRoutes.js';
+import usuarioRoutes from './src/routes/usuarioRoutes.js';
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 
 // Prefixo para as rotas de agendamento
 app.use('/agendamentos', agendamentoRoutes);
+app.use('/usuarios', usuarioRoutes);
 
 // Rota de teste
 app.get('/', (req, res) => {

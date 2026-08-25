@@ -1,6 +1,6 @@
 import db from '../config/db.js';
 
-
+// CREATE (C)
 export const criarAgendamento = (req, res) => {
     // Recebe os dados do front-end
     const {
@@ -17,7 +17,7 @@ export const criarAgendamento = (req, res) => {
 
     const status_inicial = 'Aguardando Aprovação';
 
-    // Insere na tabela Agendamento (usando NOW() para a data exata do clique)
+    // Insere na tabela Agendamento (usando NOW() para a data exata do click)
     const sqlAgendamento = `
         INSERT INTO Agendamento 
         (data_festa, horario_inicio, valor_final, status, data_criacao, usuario_id, qtd_adultos, qtd_criancas_pagantes, qtd_criancas_isentas)
@@ -30,7 +30,7 @@ export const criarAgendamento = (req, res) => {
             return res.status(500).json({ erro: 'Falha de comunicação com o banco de dados.' });
         }
 
-        const agendamento_id = results.insertId; // Pega o ID gerado automaticamente
+        const agendamento_id = results.insertId; 
 
         // Insere os detalhes na tabela Festa conectando com o ID do agendamento
         const sqlFesta = `
@@ -53,7 +53,7 @@ export const criarAgendamento = (req, res) => {
     });
 };
 
-
+// READ (R)
 export const listarAgendamentos = (req, res) => {
     // JOIN pega os detalhes da festa junto com o agendamento
     const sql = `
@@ -76,7 +76,7 @@ export const listarAgendamentos = (req, res) => {
     });
 };
 
-
+// UPDATE (U)
 export const atualizarStatus = (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
@@ -100,7 +100,7 @@ export const atualizarStatus = (req, res) => {
     });
 };
 
-
+// DELETE (D)
 export const deletarAgendamento = (req, res) => {
     const { id } = req.params;
 
