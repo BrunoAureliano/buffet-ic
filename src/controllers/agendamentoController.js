@@ -99,3 +99,33 @@ export const atualizarStatus = (req, res) => {
         });
     });
 };
+
+
+export const deletarAgendamento = (req, res) => {
+    const { id } = req.params;
+
+    const sqlFesta = 'DELETE FROM Festa WHERE agendamento_id = ?';
+
+    db.query(sqlFesta, [id], (errFesta) => {
+        if (errFesta) {
+            console.error('Erro ao deletar os detalhes da festa:', errFesta);
+            return res.status(500).json({ erro: 'Falha ao remover o cardápio associado.' });
+        }
+
+        const sqlAgendamento = 'DELETE FROM Agendamento WHERE idAgendamento = ?';
+
+        db.query(sqlAgendamento, [id], (errAgendamento, results) => {
+            if (errAgendamento) {
+                console.error('Erro ao deletar agendamento:', errAgendamento);
+                return res.status(500).json({ erro: 'Falha ao remover o agendamento principal.' });
+            }
+
+            // Se nenhuma linha foi afetada, o ID não existia no banco
+            if (results.affectedRows === 0) {
+                return res.status(404).json({ erro: 'Agendamento não encontrado para exclusão.' });
+            }
+
+            res.status(200).json({ mensagem: 'Agendamento deletado permanentemente com sucesso!' });
+        });
+    });
+};
