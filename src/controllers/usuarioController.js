@@ -1,5 +1,6 @@
 import db from '../config/db.js';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 export const cadastrarUsuario = async (req, res) => {
     const { nome, email, senha } = req.body;
@@ -55,13 +56,23 @@ export const loginUsuario = async (req, res) => {
         try {
             // Compara a senha digitada com a senha criptografada do banco
             const senhaValida = await bcrypt.compare(senha, usuarioEncontrado.senha);
-
             if (!senhaValida) {
                 return res.status(401).json({ erro: 'E-mail ou senha incorretos.' });
             }
 
+            // Criação do token para manter a sessão do usuário
+            const token = jwt.sign(
+                {
+                    id:usuarioEncontrado.idUsuario,
+                    perfil: usuarioEncontrado.perfil
+                },
+                process.env.JWT_SECRET,
+                {expiresIn: '1h'} // Sessão expira após 1h
+            );
+
             res.status(200).json({
                 mensagem: 'Login realizado com sucesso!',
+                token: token,
                 usuario: {
                     id: usuarioEncontrado.idUsuario,
                     nome: usuarioEncontrado.nome,
