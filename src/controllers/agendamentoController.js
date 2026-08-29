@@ -10,45 +10,61 @@ export const criarAgendamento = (req, res) => {
         tipo_cardapio, materiais_fornecidos, adicional_salada
     } = req.body;
 
-    // Calcula o orçamento
-    const valor_adultos = qtd_adultos * 65.00;
-    const valor_criancas = qtd_criancas_pagantes * 32.50;
-    const taxa_salada = adicional_salada ? ((qtd_adultos + qtd_criancas_pagantes) * 10.00) : 0;
-    const valor_final = valor_adultos + valor_criancas + taxa_salada;
-
-    const status_inicial = 'Aguardando Aprovação';
-
-    // Insere na tabela Agendamento (usando NOW() para a data exata do click)
-    const sqlAgendamento = `
-        INSERT INTO Agendamento 
-        (usuario_id, data_festa, horario_inicio, valor_final, status, data_criacao, qtd_adultos, qtd_criancas_pagantes, qtd_criancas_isentas)
-        VALUES (?, ?, ?, ?, ?, NOW(), ?, ?, ?)
+    // Checa se a data e o horário da festa ainda está disponível
+    const sqlChecagem = `
+        SELECT idAgendamento FROM Agendamento 
+        WHERE data_festa = ? AND horario_inicio = ? AND status != 'Recusado'
     `;
 
-    db.query(sqlAgendamento, [ usuario_id, data_festa, horario_inicio, valor_final, status_inicial, qtd_adultos, qtd_criancas_pagantes, qtd_criancas_isentas], (err, results) => {
+    db.query(sqlChecagem, [data_festa, horario_inicio], (err, results) => {
         if (err) {
-            console.error(err);
-            return res.status(500).json({ erro: 'Falha de comunicação com o banco de dados.' });
+            console.error('Erro ao verificar disponibilidade:', err);
+            return res.status(500).json({ erro: 'Erro interno ao validar a agenda.' });
         }
 
-        const agendamento_id = results.insertId; 
+        if (results.length > 0) {
+            return res.status(409).json({ erro: 'Este horário já está reservado. Por favor, escolha outra data.' });
+        }
 
-        // Insere os detalhes na tabela Festa conectando com o ID do agendamento
-        const sqlFesta = `
-            INSERT INTO Festa (tipo_cardapio, materiais_fornecidos, adicional_salada, agendamento_id)
-            VALUES (?, ?, ?, ?)
+        // Calcula o orçamento
+        const valor_adultos = qtd_adultos * 65.00;
+        const valor_criancas = qtd_criancas_pagantes * 32.50;
+        const taxa_salada = adicional_salada ? ((qtd_adultos + qtd_criancas_pagantes) * 10.00) : 0;
+        const valor_final = valor_adultos + valor_criancas + taxa_salada;
+
+        const status_inicial = 'Aguardando Aprovação';
+
+        // Insere na tabela Agendamento (usando NOW() para a data exata do click)
+        const sqlAgendamento = `
+            INSERT INTO Agendamento 
+            (usuario_id, data_festa, horario_inicio, valor_final, status, data_criacao, qtd_adultos, qtd_criancas_pagantes, qtd_criancas_isentas)
+            VALUES (?, ?, ?, ?, ?, NOW(), ?, ?, ?)
         `;
 
-        db.query(sqlFesta, [tipo_cardapio, materiais_fornecidos, adicional_salada, agendamento_id], (errFesta) => {
-            if (errFesta) {
-                console.error(errFesta);
-                return res.status(500).json({ erro: 'Erro ao salvar os detalhes do cardápio.' });
+        db.query(sqlAgendamento, [usuario_id, data_festa, horario_inicio, valor_final, status_inicial, qtd_adultos, qtd_criancas_pagantes, qtd_criancas_isentas], (errInsert, resultsInsert) => {
+            if (errInsert) {
+                console.error('Erro ao criar agendamento:', errInsert);
+                return res.status(500).json({ erro: 'Falha ao salvar o agendamento.' });
             }
 
-            res.status(201).json({
-                mensagem: 'Agendamento solicitado com sucesso!',
-                id_reserva: agendamento_id,
-                valor_total: valor_final
+            const agendamento_id = resultsInsert.insertId;
+
+            // Insere os detalhes na tabela Festa conectando com o ID do agendamento
+            const sqlFesta = `
+                INSERT INTO Festa (tipo_cardapio, materiais_fornecidos, adicional_salada, agendamento_id)
+                VALUES (?, ?, ?, ?)
+            `;
+            
+            db.query(sqlFesta, [tipo_cardapio, materiais_fornecidos, adicional_salada, agendamento_id], (errFesta) => {
+                if (errFesta) {
+                    console.error('Erro ao salvar detalhes da festa:', errFesta);
+                    return res.status(500).json({ erro: 'Agendamento criado, mas falha ao salvar os detalhes do cardápio.' });
+                }
+
+                res.status(201).json({
+                    mensagem: 'Agendamento solicitado com sucesso!',
+                    idAgendamento: agendamento_id
+                });
             });
         });
     });
