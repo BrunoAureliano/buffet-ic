@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 
+// Verifica Login
 export const verificarToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     if (!authHeader) {
@@ -18,4 +19,15 @@ export const verificarToken = (req, res, next) => {
         
         next(); 
     });
+};
+
+// Verifica Gestor
+export const verificarGestor = (req, res, next) => {
+    const perfil = req.usuarioLogado.perfil;
+
+    if (perfil !== 'gestor') {
+        return res.status(403).json({ erro: 'Acesso negado. Ação restrita a gestores do buffet.' });
+    }
+
+    next();
 };
