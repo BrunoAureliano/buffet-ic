@@ -55,18 +55,29 @@ export const criarAgendamento = (req, res) => {
 
 // READ (R)
 export const listarAgendamentos = (req, res) => {
+    const { id, perfil } = req.usuarioLogado;
+
     // JOIN pega os detalhes da festa junto com o agendamento
-    const sql = `
+    let sql = `
         SELECT 
             A.idAgendamento, A.data_festa, A.horario_inicio, A.status, A.valor_final,
             A.qtd_adultos, A.qtd_criancas_pagantes, A.qtd_criancas_isentas,
             F.tipo_cardapio, F.adicional_salada
         FROM Agendamento A
         LEFT JOIN Festa F ON A.idAgendamento = F.agendamento_id
-        ORDER BY A.data_festa ASC
     `;
+    
+    let parametros = [];
 
-    db.query(sql, (err, results) => {
+    // Se não for o gestor, o WHERE é injetado, para buscar apenas as festas atreladas ao ID deste cliente
+    if (perfil === 'cliente') {
+        sql += ' WHERE A.usuario_id = ?';
+        parametros.push(id);
+    }
+
+    sql += ' ORDER BY A.data_festa ASC';
+
+    db.query(sql, parametros, (err, results) => {
         if (err) {
             console.error('Erro ao listar agendamentos:', err);
             return res.status(500).json({ erro: 'Falha ao buscar os dados no banco.' });
