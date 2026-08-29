@@ -2,11 +2,12 @@ import db from '../config/db.js';
 
 // CREATE (C)
 export const criarAgendamento = (req, res) => {
-    // Recebe os dados do front-end
+    
+    const usuario_id = req.usuarioLogado.id;
     const {
         data_festa, horario_inicio, qtd_adultos,
         qtd_criancas_pagantes, qtd_criancas_isentas,
-        tipo_cardapio, materiais_fornecidos, adicional_salada, usuario_id
+        tipo_cardapio, materiais_fornecidos, adicional_salada
     } = req.body;
 
     // Calcula o orçamento
@@ -20,11 +21,11 @@ export const criarAgendamento = (req, res) => {
     // Insere na tabela Agendamento (usando NOW() para a data exata do click)
     const sqlAgendamento = `
         INSERT INTO Agendamento 
-        (data_festa, horario_inicio, valor_final, status, data_criacao, usuario_id, qtd_adultos, qtd_criancas_pagantes, qtd_criancas_isentas)
-        VALUES (?, ?, ?, ?, NOW(), ?, ?, ?, ?)
+        (usuario_id, data_festa, horario_inicio, valor_final, status, data_criacao, qtd_adultos, qtd_criancas_pagantes, qtd_criancas_isentas)
+        VALUES (?, ?, ?, ?, ?, NOW(), ?, ?, ?)
     `;
 
-    db.query(sqlAgendamento, [data_festa, horario_inicio, valor_final, status_inicial, usuario_id, qtd_adultos, qtd_criancas_pagantes, qtd_criancas_isentas], (err, results) => {
+    db.query(sqlAgendamento, [ usuario_id, data_festa, horario_inicio, valor_final, status_inicial, qtd_adultos, qtd_criancas_pagantes, qtd_criancas_isentas], (err, results) => {
         if (err) {
             console.error(err);
             return res.status(500).json({ erro: 'Falha de comunicação com o banco de dados.' });
