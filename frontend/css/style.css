@@ -1,0 +1,114 @@
+:root {
+    --fundo-castanho: #2e1a0f;    
+    --texto-bege: #fdf5e6;        
+    --texto-secundario: #d4c4a8;  
+    --destaque-mostarda: #cda434; 
+}
+
+body {
+    background-color: var(--fundo-castanho);
+    color: var(--texto-bege);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.hero-section {
+    background-color: var(--fundo-castanho);
+    min-height: 100vh; 
+}
+
+.hero-title {
+    color: var(--texto-bege);
+    letter-spacing: 2px;
+}
+
+.hero-subtitle {
+    color: var(--texto-secundario);
+}
+
+.btn-cta {
+    background-color: var(--destaque-mostarda);
+    color: var(--fundo-castanho);
+    border: none;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-cta:hover {
+    background-color: var(--texto-bege);
+    color: var(--fundo-castanho);
+    transform: translateY(-3px);
+}
+
+/* Seção do Cardápio */
+.menu-section {
+    background-color: #3b2314; 
+}
+
+.divider {
+    height: 3px;
+    width: 60px;
+    background-color: var(--destaque-mostarda);
+    border-radius: 2px;
+}
+
+.menu-card {
+    background-color: var(--fundo-castanho);
+    border: 1px solid rgba(205, 164, 52, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.menu-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--destaque-mostarda);
+}
+
+.menu-list li {
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+    color: var(--texto-bege);
+    border-bottom: 1px dashed rgba(253, 245, 230, 0.1);
+    padding-bottom: 0.5rem;
+}
+
+.menu-list li:last-child {
+    border-bottom: none;
+}
+
+/* Seção de Serviços e Regras */
+.services-section {
+    background-color: var(--fundo-castanho);
+}
+
+.text-bege {
+    color: var(--texto-bege);
+}
+
+.pricing-card {
+    background-color: #3b2314;
+    border: 2px solid var(--destaque-mostarda);
+}
+
+.age-rules {
+    background-color: rgba(205, 164, 52, 0.1);
+    border-left: 4px solid var(--destaque-mostarda);
+}
+
+/* Rodapé */
+.footer-section {
+    background-color: #1a0f08; 
+    border-top: 1px solid rgba(253, 245, 230, 0.05);
+}
+
+.text-secundario {
+    color: var(--texto-secundario);
+}
+
+.footer-link {
+    transition: color 0.3s;
+}
+
+.footer-link:hover {
+    color: var(--destaque-mostarda) !important;
+}
