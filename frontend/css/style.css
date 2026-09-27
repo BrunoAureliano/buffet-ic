@@ -112,3 +112,22 @@ body {
 .footer-link:hover {
     color: var(--destaque-mostarda) !important;
 }
+
+/* Tela de Login */
+.login-card {
+    background-color: #3b2314;
+    border: 1px solid rgba(205, 164, 52, 0.3);
+}
+
+.custom-input {
+    background-color: rgba(253, 245, 230, 0.9);
+    border: 1px solid transparent;
+    color: var(--fundo-castanho);
+    padding: 0.75rem 1rem;
+}
+
+.custom-input:focus {
+    background-color: #ffffff;
+    border-color: var(--destaque-mostarda);
+    box-shadow: 0 0 0 0.25rem rgba(205, 164, 52, 0.25);
+}
