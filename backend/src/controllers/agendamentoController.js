@@ -13,17 +13,17 @@ export const criarAgendamento = (req, res) => {
     // Checa se a data e o horário da festa ainda está disponível
     const sqlChecagem = `
         SELECT idAgendamento FROM Agendamento 
-        WHERE data_festa = ? AND horario_inicio = ? AND status != 'Recusado'
+        WHERE data_festa = ? AND status != 'Recusado'
     `;
 
-    db.query(sqlChecagem, [data_festa, horario_inicio], (err, results) => {
+    db.query(sqlChecagem, [data_festa], (err, results) => {
         if (err) {
             console.error('Erro ao verificar disponibilidade:', err);
             return res.status(500).json({ erro: 'Erro interno ao validar a agenda.' });
         }
 
         if (results.length > 0) {
-            return res.status(409).json({ erro: 'Este horário já está reservado. Por favor, escolha outra data.' });
+            return res.status(409).json({ erro: 'Esta data já possui um evendo reservado. Por favor, escolha outra data.' });
         }
 
         // Calcula o orçamento
