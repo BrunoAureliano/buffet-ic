@@ -25,7 +25,7 @@ if (formLogin) {
 
                 alert('Login realizado com sucesso!');
                 
-                if (dados.usuario.tipo === 'Gestor') {
+                if (dados.usuario.perfil === 'gestor') {
                     window.location.href = 'dashboard.html';
                 } else {
                     window.location.href = 'painel.html';

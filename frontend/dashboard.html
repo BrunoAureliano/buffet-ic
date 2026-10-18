@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard do Gestor - Espeto Caipira</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="min-vh-100" style="background-color: #3b2314;">
+
+    <!-- Barra de Navegação Exclusiva para o Gestor -->
+    <nav class="navbar navbar-expand-lg nav-painel shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold hero-title" href="#">Espeto Caipira | Gestão</a>
+            <div class="d-flex align-items-center">
+                <span class="text-bege me-3 d-none d-md-block">Olá, <span id="nomeAdmin">Gestor</span></span>
+                <button class="btn btn-outline-light btn-sm" id="btnSairAdmin">Sair</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal: Tabela de Orçamentos -->
+    <main class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-bege">Controlo de Orçamentos e Eventos</h2>
+        </div>
+
+        <div class="card p-4 shadow-sm rounded-4" style="background-color: #2b180d; border: 1px solid rgba(205, 164, 52, 0.2);">
+            <div class="table-responsive">
+                <!-- Tabela com estilo dark customizado para a identidade do buffet -->
+                <table class="table table-dark table-hover align-middle mb-0" style="--bs-table-bg: transparent; --bs-table-hover-bg: rgba(205, 164, 52, 0.05);">
+                    <thead style="border-bottom: 2px solid var(--destaque-mostarda);">
+                        <tr>
+                            <th scope="col" class="text-bege fw-bold">Pedido</th>
+                            <th scope="col" class="text-bege fw-bold">Data</th>
+                            <th scope="col" class="text-bege fw-bold">Horário</th>
+                            <th scope="col" class="text-bege fw-bold">Convidados</th>
+                            <th scope="col" class="text-bege fw-bold">Estado</th>
+                            <th scope="col" class="text-bege fw-bold text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaAgendamentosAdmin">
+                        <!-- Exemplo estático para visualização do design -->
+                        <tr>
+                            <td class="text-secundario">#12</td>
+                            <td class="text-secundario">15/12/2026</td>
+                            <td class="text-secundario">12:00</td>
+                            <td class="text-secundario">50</td>
+                            <td><span class="badge bg-warning text-dark">Aguardando Aprovação</span></td>
+                            <td class="text-center">
+                                <button class="btn btn-success btn-sm me-2 fw-bold">Aprovar</button>
+                                <button class="btn btn-danger btn-sm fw-bold">Recusar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
