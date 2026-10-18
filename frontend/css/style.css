@@ -113,7 +113,7 @@ body {
     color: var(--destaque-mostarda) !important;
 }
 
-/* Tela de Login */
+/* Tela de Login e Cadastro*/
 .login-card {
     background-color: #3b2314;
     border: 1px solid rgba(205, 164, 52, 0.3);
