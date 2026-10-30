@@ -33,6 +33,16 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const agendamentos = await resposta.json();
+            if (!resposta.ok) {
+                if (resposta.status === 401 || resposta.status === 403) {
+                    alert('Sua sessão expirou. Faça login novamente.');
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('usuarioLogado');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                throw new Error(agendamentos.erro || 'Erro ao carregar dados');
+            }
             container.innerHTML = ''; 
 
             if (agendamentos.length === 0) {
@@ -81,6 +91,26 @@ document.addEventListener('DOMContentLoaded', () => {
     formAgendamento.addEventListener('submit', async (e) => {
         e.preventDefault();
 
+        const dataInput = document.getElementById('dataEvento').value;
+        const dataEscolhida = new Date(dataInput + 'T00:00:00'); 
+        const dataHoje = new Date();
+        dataHoje.setHours(0, 0, 0, 0); 
+
+        if (dataEscolhida < dataHoje) {
+            alert('Não é possível agendar festas no passado. Escolha uma data válida.');
+            return;
+        }
+
+        const qtdAdultos = parseInt(document.getElementById('qtdAdultos').value) || 0;
+        const qtdCriancasIsentas = parseInt(document.getElementById('qtdCriancasIsentas').value) || 0;
+        const qtdCriancasPagam = parseInt(document.getElementById('qtdCriancasPagam').value) || 0;
+        const totalPessoas = qtdAdultos + qtdCriancasIsentas + qtdCriancasPagam;
+
+        if (totalPessoas > 500) {
+            alert('A capacidade máxima do buffet é de 500 pessoas. Por favor, reduza a lista de convidados.');
+            return;
+        }
+
         const novoAgendamento = {
             data_festa: document.getElementById('dataEvento').value,
             horario_inicio: document.getElementById('horaEvento').value,
@@ -117,6 +147,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 carregarAgendamentos();
             } else {
                 alert(`Erro: ${dados.erro || 'Não foi possível solicitar o orçamento.'}`);
+
+                if (resposta.status === 401 || resposta.status === 403) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('usuarioLogado');
+                    window.location.href = 'login.html';
+                }
             }
         } catch (erro) {
             console.error('Erro ao enviar agendamento:', erro);

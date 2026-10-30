@@ -33,6 +33,16 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const agendamentos = await resposta.json();
+            if (!resposta.ok) {
+                if (resposta.status === 401 || resposta.status === 403) {
+                    alert('Sua sessão expirou. Faça login novamente.');
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('usuarioLogado');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                throw new Error(agendamentos.erro || 'Erro ao carregar orçamentos');
+            }
             tbody.innerHTML = ''; 
 
             if (agendamentos.length === 0) {
@@ -104,6 +114,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 carregarTodosAgendamentos(); 
             } else {
                 alert(`Erro: ${dados.erro || 'Não foi possível atualizar o pedido.'}`);
+
+                if (resposta.status === 401 || resposta.status === 403) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('usuarioLogado');
+                    window.location.href = 'login.html';
+                }
             }
         } catch (erro) {
             console.error('Erro ao atualizar status:', erro);
