@@ -23,19 +23,23 @@ if (formLogin) {
                 localStorage.setItem('token', dados.token);
                 localStorage.setItem('usuarioLogado', JSON.stringify(dados.usuario));
 
-                alert('Login realizado com sucesso!');
+                mostrarNotificacao('Login realizado com sucesso!', 'sucesso');
                 
-                if (dados.usuario.perfil === 'gestor') {
-                    window.location.href = 'dashboard.html';
-                } else {
-                    window.location.href = 'painel.html';
-                }
+                // Aguarda 1 segundo para o usuário ler a mensagem antes de redirecionar
+                setTimeout(() => {
+                    if (dados.usuario.perfil === 'gestor') {
+                        window.location.href = 'dashboard.html';
+                    } else {
+                        window.location.href = 'painel.html';
+                    }
+                }, 1000);
+                
             } else {
-                alert(`Erro: ${dados.erro || 'Falha ao realizar login'}`);
+                mostrarNotificacao(`Erro: ${dados.erro || 'Falha ao realizar login'}`, 'erro');
             }
         } catch (erro) {
             console.error('Erro na requisição:', erro);
-            alert('Erro de conexão com o servidor. Verifique se o back-end está rodando.');
+            mostrarNotificacao('Erro de conexão com o servidor. Verifique se o back-end está rodando.', 'erro');
         }
     });
 }

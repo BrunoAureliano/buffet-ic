@@ -2,8 +2,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Verificação de Segurança (Apenas usuarios logados)
     const token = localStorage.getItem('token');
     if (!token) {
-        alert('Acesso negado. Por favor, inicie sessão.');
-        window.location.href = 'login.html';
+        mostrarNotificacao('Acesso negado. Por favor, inicie sessão.', 'erro');
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 1500);
         return;
     }
 
@@ -35,10 +37,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const agendamentos = await resposta.json();
             if (!resposta.ok) {
                 if (resposta.status === 401 || resposta.status === 403) {
-                    alert('Sua sessão expirou. Faça login novamente.');
+                    mostrarNotificacao('Sua sessão expirou. Faça login novamente.', 'aviso');
                     localStorage.removeItem('token');
                     localStorage.removeItem('usuarioLogado');
-                    window.location.href = 'login.html';
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1500);
                     return;
                 }
                 throw new Error(agendamentos.erro || 'Erro ao carregar orçamentos');
@@ -109,21 +113,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const dados = await resposta.json();
 
             if (resposta.ok) {
-                alert(`Pedido ${novoStatus.toLowerCase()} com sucesso!`);
+                mostrarNotificacao(`Pedido ${novoStatus.toLowerCase()} com sucesso!`, 'sucesso');
                 // Recarrega a tabela para atualizar a cor da etiqueta e esconder os botões instantaneamente
                 carregarTodosAgendamentos(); 
             } else {
-                alert(`Erro: ${dados.erro || 'Não foi possível atualizar o pedido.'}`);
+                mostrarNotificacao(`Erro: ${dados.erro || 'Não foi possível atualizar o pedido.'}`, 'erro');
 
                 if (resposta.status === 401 || resposta.status === 403) {
                     localStorage.removeItem('token');
                     localStorage.removeItem('usuarioLogado');
-                    window.location.href = 'login.html';
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1500);
                 }
             }
         } catch (erro) {
             console.error('Erro ao atualizar status:', erro);
-            alert('Falha na comunicação com o servidor ao tentar atualizar o pedido.');
+            mostrarNotificacao('Falha na comunicação com o servidor ao tentar atualizar o pedido.', 'erro');
         }
     };
 });

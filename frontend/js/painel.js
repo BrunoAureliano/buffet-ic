@@ -2,8 +2,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Verificação de Segurança 
     const token = localStorage.getItem('token');
     if (!token) {
-        alert('Acesso negado. Por favor, inicie sessão.');
-        window.location.href = 'login.html';
+        mostrarNotificacao('Acesso negado. Por favor, inicie sessão.', 'erro');
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 1500);
         return;
     }
 
@@ -35,10 +37,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const agendamentos = await resposta.json();
             if (!resposta.ok) {
                 if (resposta.status === 401 || resposta.status === 403) {
-                    alert('Sua sessão expirou. Faça login novamente.');
+                    mostrarNotificacao('Sua sessão expirou. Faça login novamente.', 'aviso');
                     localStorage.removeItem('token');
                     localStorage.removeItem('usuarioLogado');
-                    window.location.href = 'login.html';
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1500);
                     return;
                 }
                 throw new Error(agendamentos.erro || 'Erro ao carregar dados');
@@ -97,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dataHoje.setHours(0, 0, 0, 0); 
 
         if (dataEscolhida < dataHoje) {
-            alert('Não é possível agendar festas no passado. Escolha uma data válida.');
+            mostrarNotificacao('Não é possível agendar festas no passado. Escolha uma data válida.', 'aviso');
             return;
         }
 
@@ -107,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalPessoas = qtdAdultos + qtdCriancasIsentas + qtdCriancasPagam;
 
         if (totalPessoas > 500) {
-            alert('A capacidade máxima do buffet é de 500 pessoas. Por favor, reduza a lista de convidados.');
+            mostrarNotificacao('A capacidade máxima do buffet é de 500 pessoas. Por favor, reduza a lista de convidados.', 'aviso');
             return;
         }
 
@@ -136,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const dados = await resposta.json();
 
             if (resposta.ok) {
-                alert('Orçamento solicitado com sucesso!');
+                mostrarNotificacao('Orçamento solicitado com sucesso!', 'sucesso');
                 
                 const modalElement = document.getElementById('modalNovoAgendamento');
                 const modalInstance = bootstrap.Modal.getInstance(modalElement);
@@ -146,17 +150,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 carregarAgendamentos();
             } else {
-                alert(`Erro: ${dados.erro || 'Não foi possível solicitar o orçamento.'}`);
+                mostrarNotificacao(`Erro: ${dados.erro || 'Não foi possível solicitar o orçamento.'}`, 'erro');
 
                 if (resposta.status === 401 || resposta.status === 403) {
                     localStorage.removeItem('token');
                     localStorage.removeItem('usuarioLogado');
-                    window.location.href = 'login.html';
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1500);
                 }
             }
         } catch (erro) {
             console.error('Erro ao enviar agendamento:', erro);
-            alert('Falha na comunicação com o servidor.');
+            mostrarNotificacao('Falha na comunicação com o servidor.', 'erro');
         }
     });
 });

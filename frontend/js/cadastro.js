@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const confirmarSenha = document.getElementById('confirmarSenha').value;
 
             if (senha !== confirmarSenha) {
-                alert('As senhas não coincidem. Por favor, verifique e tente novamente.');
+                mostrarNotificacao('As senhas não coincidem. Por favor, verifique e tente novamente.', 'erro');
                 return;
             }
 
@@ -46,25 +46,33 @@ document.addEventListener('DOMContentLoaded', () => {
                             localStorage.setItem('token', dadosLogin.token);
                             localStorage.setItem('usuarioLogado', JSON.stringify(dadosLogin.usuario));
 
-                            // Reencaminha para o painel
-                            window.location.href = 'painel.html';
+                            mostrarNotificacao('Conta criada com sucesso! Entrando no sistema...', 'sucesso');
+                            
+                            // Reencaminha para o painel após 1 segundo
+                            setTimeout(() => {
+                                window.location.href = 'painel.html';
+                            }, 1000);
                         } else {
                             
                             // Fallback seguro
-                            alert('Conta criada com sucesso! Por favor, inicie sessão.');
-                            window.location.href = 'login.html';
+                            mostrarNotificacao('Conta criada com sucesso! Por favor, inicie sessão.', 'sucesso');
+                            setTimeout(() => {
+                                window.location.href = 'login.html';
+                            }, 1500);
                         }
                     } catch (erroLogin) {
-                        alert('Conta criada! Redirecionando para a tela de acesso...');
-                        window.location.href = 'login.html';
+                        mostrarNotificacao('Conta criada! Redirecionando para a tela de acesso...', 'sucesso');
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 1500);
                     }
 
                 } else {
-                    alert(`Erro: ${dados.erro || 'Não foi possível criar a conta.'}`);
+                    mostrarNotificacao(`Erro: ${dados.erro || 'Não foi possível criar a conta.'}`, 'erro');
                 }
             } catch (erro) {
                 console.error('Erro na requisição:', erro);
-                alert('Erro de comunicação com o servidor.');
+                mostrarNotificacao('Erro de comunicação com o servidor.', 'erro');
             }
         });
     }
