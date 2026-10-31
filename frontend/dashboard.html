@@ -10,10 +10,10 @@
 </head>
 <body class="min-vh-100" style="background-color: #3b2314;">
 
-    <!-- Barra de Navegação Exclusiva para o Gestor -->
+    <!-- Barra de Navegação -->
     <nav class="navbar navbar-expand-lg nav-painel shadow-sm">
         <div class="container">
-            <a class="navbar-brand fw-bold hero-title" href="#">Espeto Caipira | Gestão</a>
+            <a class="navbar-brand fw-bold hero-title" href="index.html">Espeto Caipira | Gestão</a>
             <div class="d-flex align-items-center">
                 <span class="text-bege me-3 d-none d-md-block">Olá, <span id="nomeAdmin">Gestor</span></span>
                 <button class="btn btn-outline-light btn-sm" id="btnSairAdmin">Sair</button>
@@ -21,42 +21,26 @@
         </div>
     </nav>
 
-    <!-- Conteúdo Principal: Tabela de Orçamentos -->
-    <main class="container py-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="text-bege">Controle de Orçamentos e Eventos</h2>
+    <!-- Conteúdo Principal com Accordions (Tema Dark ativado para os componentes) -->
+    <main class="container py-4" data-bs-theme="dark">
+        <h2 class="text-bege mb-4">Controle de Orçamentos</h2>
+
+        <!-- Bloco 1: Solicitações Pendentes -->
+        <h5 class="text-warning mb-3 fw-bold">⏳ A Aceitar / Recusar</h5>
+        <div class="accordion mb-5 shadow-sm" id="accordionPendentes">
+            <div class="text-secundario px-2">Carregando solicitações...</div>
         </div>
 
-        <div class="card p-4 shadow-sm rounded-4" style="background-color: #2b180d; border: 1px solid rgba(205, 164, 52, 0.2);">
-            <div class="table-responsive">
-                <!-- Tabela com estilo dark customizado para a identidade do buffet -->
-                <table class="table table-dark table-hover align-middle mb-0" style="--bs-table-bg: transparent; --bs-table-hover-bg: rgba(205, 164, 52, 0.05);">
-                    <thead style="border-bottom: 2px solid var(--destaque-mostarda);">
-                        <tr>
-                            <th scope="col" class="text-bege fw-bold">Pedido</th>
-                            <th scope="col" class="text-bege fw-bold">Data</th>
-                            <th scope="col" class="text-bege fw-bold">Horário</th>
-                            <th scope="col" class="text-bege fw-bold">Convidados</th>
-                            <th scope="col" class="text-bege fw-bold">Estado</th>
-                            <th scope="col" class="text-bege fw-bold text-center">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabelaAgendamentosAdmin">
-                        <!-- Exemplo estático para visualização do design -->
-                        <tr>
-                            <td class="text-secundario">#12</td>
-                            <td class="text-secundario">15/12/2026</td>
-                            <td class="text-secundario">12:00</td>
-                            <td class="text-secundario">50</td>
-                            <td><span class="badge bg-warning text-dark">Aguardando Aprovação</span></td>
-                            <td class="text-center">
-                                <button class="btn btn-success btn-sm me-2 fw-bold">Aprovar</button>
-                                <button class="btn btn-danger btn-sm fw-bold">Recusar</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <!-- Bloco 2: Festas Aprovadas -->
+        <h5 class="text-success mb-3 fw-bold">✅ Festas Confirmadas</h5>
+        <div class="accordion mb-5 shadow-sm" id="accordionAprovados">
+            <div class="text-secundario px-2">Carregando eventos...</div>
+        </div>
+
+        <!-- Bloco 3: Festas Recusadas -->
+        <h5 class="text-danger mb-3 fw-bold">❌ Histórico de Recusados</h5>
+        <div class="accordion mb-5 shadow-sm" id="accordionRecusados">
+            <div class="text-secundario px-2">Carregando histórico...</div>
         </div>
     </main>
 
