@@ -66,10 +66,15 @@
                             <div class="col-12 mt-2">
                                 <label class="form-label text-secundario">Tipo de Cardápio</label>
                                 <select class="form-select custom-input" id="tipoCardapio" required>
+                                    <option value="" selected disabled>Selecione uma opção...</option>
                                     <option value="Churrasco Tradicional">Churrasco Tradicional</option>
                                     <option value="Churrasco Premium">Churrasco Premium</option>
                                     <option value="Festa Infantil">Festa Infantil</option>
                                 </select>
+                                
+                                <div id="infoCardapio" class="alert alert-secondary mt-3 d-none" style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(205, 164, 52, 0.3); color: #f5f5dc;">
+                                    <strong>Incluso no cardápio:</strong> <span id="textoCardapio"></span>
+                                </div>
                             </div>
                             
                             <h6 class="text-bege mt-4 border-bottom border-secondary pb-2">Convidados</h6>
@@ -97,6 +102,10 @@
                                     </label>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="alert mt-4 mb-2 text-center fs-5" style="background-color: #3b2314; border: 2px dashed #cda434; color: #cda434;">
+                            <strong>Total Estimado: </strong> <span id="valorEstimadoTela" class="fw-bold">R$ 0,00</span>
                         </div>
                     </form>
                 </div>

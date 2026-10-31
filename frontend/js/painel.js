@@ -63,6 +63,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const totalConvidados = agendamento.qtd_adultos + agendamento.qtd_criancas_isentas + agendamento.qtd_criancas_pagantes;
 
+                // Formatação do Valor Final em Reais
+                const valorFormatado = agendamento.valor_final 
+                    ? Number(agendamento.valor_final).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                    : 'A calcular';
+
                 const cardHTML = `
                     <div class="col-md-6 col-lg-4">
                         <div class="agendamento-card p-4 rounded-3 shadow-sm h-100">
@@ -74,6 +79,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             <p class="text-bege mb-1">⏰ <strong>Horário:</strong> ${agendamento.horario_inicio} (4h de evento)</p>
                             <p class="text-bege mb-1">🥗 <strong>Salada:</strong> ${agendamento.adicional_salada ? 'Sim' : 'Não'}</p>
                             <p class="text-bege mb-1">🍽️ <strong>Cardápio:</strong> ${agendamento.tipo_cardapio || 'Não informado'}</p>
+                            
+                            <!-- Nova linha com o Valor Final -->
+                            <p class="text-warning mb-1 mt-2 fs-5"><strong>💰 Total: ${valorFormatado}</strong></p>
+                            
                             <hr class="border-secondary">
                             <p class="text-secundario small mb-0">Total de Convidados: ${totalConvidados}</p>
                         </div>
@@ -90,7 +99,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
     carregarAgendamentos();
 
-    // 5. Envio do Formulário de Novo Agendamento
+    // --- 5. LÓGICA DE ATUALIZAÇÃO EM TEMPO REAL (CARDÁPIO E PREÇO) ---
+
+    // Dicionário de Cardápios [[[[AINDA TENHO QUE ATUALIZAR]]]]
+    const descricoesCardapio = {
+        'Churrasco Tradicional': 'Espetinhos de carne, frango e linguiça, arroz branco, farofa da casa e vinagrete.',
+        'Churrasco Premium': 'Tudo do Tradicional + pão de alho, queijo coalho, medalhão de frango e picanha.',
+        'Festa Infantil': 'Mini hambúrguer, cachorro-quente, batata frita, pipoca e docinhos tradicionais.'
+    };
+
+    const selectCardapio = document.getElementById('tipoCardapio');
+    const infoCardapio = document.getElementById('infoCardapio');
+    const textoCardapio = document.getElementById('textoCardapio');
+
+    selectCardapio.addEventListener('change', (e) => {
+        const selecionado = e.target.value;
+        if (descricoesCardapio[selecionado]) {
+            textoCardapio.textContent = descricoesCardapio[selecionado];
+            infoCardapio.classList.remove('d-none');
+        } else {
+            infoCardapio.classList.add('d-none');
+        }
+    });
+
+    // Calculadora baseada no banco de dados
+    function calcularValorEmTempoReal() {
+        const qtdAdultos = parseInt(document.getElementById('qtdAdultos').value) || 0;
+        const qtdCriancasPagam = parseInt(document.getElementById('qtdCriancasPagam').value) || 0;
+        const adicionalSalada = document.getElementById('adicionalSalada').checked;
+
+        const valorAdultos = qtdAdultos * 65.00;
+        const valorCriancas = qtdCriancasPagam * 32.50;
+        const taxaSalada = adicionalSalada ? ((qtdAdultos + qtdCriancasPagam) * 10.00) : 0;
+        
+        const valorFinal = valorAdultos + valorCriancas + taxaSalada;
+
+        document.getElementById('valorEstimadoTela').textContent = valorFinal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+    
+    document.getElementById('qtdAdultos').addEventListener('input', calcularValorEmTempoReal);
+    document.getElementById('qtdCriancasPagam').addEventListener('input', calcularValorEmTempoReal);
+    document.getElementById('adicionalSalada').addEventListener('change', calcularValorEmTempoReal);
+
+    document.getElementById('modalNovoAgendamento').addEventListener('shown.bs.modal', calcularValorEmTempoReal);
+
+
+    // --- 6. Envio do Formulário de Novo Agendamento ---
     const formAgendamento = document.getElementById('formAgendamento');
     formAgendamento.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -147,6 +201,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 modalInstance.hide();
                 
                 formAgendamento.reset();
+                infoCardapio.classList.add('d-none');
+                calcularValorEmTempoReal();
 
                 carregarAgendamentos();
             } else {
